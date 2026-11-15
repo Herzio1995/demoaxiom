@@ -1,0 +1,15 @@
+Corona receptora del guiador (PETG) - generado por scripts/receptores_guiador_ovum2_2.py
+Medidas (mm): 116.6 x 74.4 x 22.8
+Canaletas (centro, semiancho en grados):
+  RDown    10.5  +-15.5
+  RTop     49.0  +-15.0
+  Central  90.0  +-15.0
+  LTop     131.0  +-15.0
+  LDown    169.5  +-15.5
+Agujeros M3 avellanados (taladrar D3.4 en el piso PVC en esta posicion x,y):
+  RDown    x=48.6 y=-2.3
+  RTop     x=34.6 y=28.5
+  Central  x=0.0 y=41.1
+  LTop     x=-34.6 y=28.5
+  LDown    x=-48.6 y=-2.3
+Holgura minima con lo que gira: 3.8 mm

@@ -1,0 +1,35 @@
+BandejaLDown - PVC 2 mm - HERRAJES Y ARMADO
+
+Piezas: Piso + Pared_1, Pared_2, Pared_3, Pared_4
+Pestanas del piso: 20 (muesca abierta + escuadra: 16, muesca abierta sin escuadra: 1,
+  ranura cerrada en pared propia: 3, ranura cerrada en pared de otra bandeja: 0)
+
+Escuadras impresas en PETG 2.5 mm por fuera: 16 (15 mm de ancho, ala bajo el piso 20, ala exterior 18)
+    85 grados: 3  -> stl/bandejas_pvc/Escuadra_85deg.stl
+    86 grados: 2  -> stl/bandejas_pvc/Escuadra_86deg.stl
+    87 grados: 1  -> stl/bandejas_pvc/Escuadra_87deg.stl
+    90 grados: 2  -> stl/bandejas_pvc/Escuadra_90deg.stl
+    94 grados: 4  -> stl/bandejas_pvc/Escuadra_94deg.stl
+    97 grados: 2  -> stl/bandejas_pvc/Escuadra_97deg.stl
+    105 grados: 1  -> stl/bandejas_pvc/Escuadra_105deg.stl
+    111 grados: 1  -> stl/bandejas_pvc/Escuadra_111deg.stl
+  Tornillos M3 x 10 cabeza boton o plana (cabeza por DENTRO de la bandeja) + arandela + tuerca M3 por fuera: 32
+
+Cunas impresas en PETG (transicion pared compartida -> pared propia): 1
+    Cuna 1: triangulo 3.6 x 2 mm, angulo 29.4 grados, alto hasta el borde de la pared; pegar sobre el piso
+
+Paredes compartidas con: BandejaRDown. Esas paredes bajan 3.5 mm bajo el piso mas bajo;
+  las pestanas de ambos pisos entran en ranuras cerradas (sin escuadra). Sellador en la union.
+
+Comparte pared con BandejaLTop: el piso llega hasta la cara exterior de esa pared y sus pestanas
+  entran en ranuras cerradas de esa pared.
+
+Orden de armado (PVC):
+  1) Pegar la plantilla 1:1 (plantillas_pvc) sobre la lamina, cortar con cuter/sierra. Agujeros D3.4 con broca.
+     Ranuras cerradas: 2 agujeros D2.5 en los extremos y cortar entre ellos con cuter. Esquinas interiores: agujero D3.
+  2) Doblar el piso con pistola de calor sobre cada linea punteada, al angulo indicado y con la cara concava indicada
+     (conviene una plantilla de carton con el angulo). Mismo procedimiento con las esquinas de las paredes.
+  3) Montar las paredes con las pestanas del piso en sus muescas/ranuras.
+  4) Escuadras PETG por fuera: tornillo M3 con la cabeza por dentro (lado de los huevos), arandela y tuerca por fuera.
+  5) Opcional: sellar juntas con cemento para PVC.
+  Tolerancia del desarrollo con doblez a calor: +-1 mm por esquina de 90 grados.

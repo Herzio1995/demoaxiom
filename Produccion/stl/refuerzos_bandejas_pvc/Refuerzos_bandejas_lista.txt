@@ -1,0 +1,62 @@
+REFUERZOS IMPRESOS (PETG) PARA LAS BANDEJAS DE PVC 2 mm
+
+TODOS LOS AGUJEROS IMPRESOS SON D4.4 para remache de 3 mm (en PETG el agujero sale ~1 mm mas chico que el modelo).
+Esquinero: poste en L/V por fuera de la esquina, de toda la altura de la pared, incorporado al zocalo.
+  Remache de 3 mm con la cabeza dentro de la bandeja: taladrar el PVC D3.1-3.2 usando la pieza como guia.
+Perfil de borde: angulo en L (2.5 mm) que tapa el canto superior de la pared y baja 10 mm por fuera.
+  Pegado con cianoacrilato/epoxi. En paredes compartidas (huevos a ambos lados) solo tapa el canto.
+Nervio: barra 3 x 8 mm pegada bajo el piso, para que no se combe.
+
+Impresion: PETG, 4 perimetros, 40% relleno. Esquineros de pie; perfiles apoyados sobre el ala superior;
+  nervios acostados sobre la cara de 8 mm.
+
+BandejaCentral: 0 esquineros, 0 perfiles de borde, 0 nervios
+   Zocalo_BandejaCentral_1            largo 173 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+BandejaLTop: 0 esquineros, 0 perfiles de borde, 0 nervios
+   Zocalo_BandejaLTop_1               largo 53 mm, 1 tornillos M3
+   Zocalo_BandejaLTop_2               largo 144 mm, 2 tornillos M3, con 2 esquinero(s), 8 insertos M3
+   Zocalo_BandejaLTop_3               largo 103 mm, 2 tornillos M3
+   Zocalo_BandejaLTop_4               largo 147 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+BandejaRTop: 0 esquineros, 0 perfiles de borde, 0 nervios
+   Zocalo_BandejaRTop_2               largo 149 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaRTop_3               largo 103 mm, 2 tornillos M3
+   Zocalo_BandejaRTop_4               largo 144 mm, 2 tornillos M3, con 2 esquinero(s), 8 insertos M3
+   Zocalo_BandejaRTop_5               largo 52 mm, 1 tornillos M3
+BandejaLDown: 0 esquineros, 0 perfiles de borde, 0 nervios
+   Zocalo_BandejaLDown_1              largo 45 mm, 1 tornillos M3
+   Zocalo_BandejaLDown_2              largo 121 mm, 2 tornillos M3
+   Zocalo_BandejaLDown_3              largo 119 mm, 2 tornillos M3
+   Zocalo_BandejaLDown_4              largo 176 mm, 3 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaLDown_5              largo 107 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaLDown_6              largo 97 mm, 2 tornillos M3
+   Zocalo_BandejaLDown_7              largo 152 mm, 2 tornillos M3
+   Zocalo_BandejaLDown_8              largo 158 mm, 3 tornillos M3
+   Zocalo_BandejaLDown_9              largo 145 mm, 3 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaLDown_10             largo 88 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+BandejaRDown: 0 esquineros, 0 perfiles de borde, 0 nervios
+   Zocalo_BandejaRDown_1              largo 151 mm, 3 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaRDown_2              largo 141 mm, 3 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaRDown_3              largo 98 mm, 2 tornillos M3
+   Zocalo_BandejaRDown_4              largo 152 mm, 2 tornillos M3
+   Zocalo_BandejaRDown_5              largo 97 mm, 2 tornillos M3
+   Zocalo_BandejaRDown_6              largo 107 mm, 2 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaRDown_7              largo 176 mm, 3 tornillos M3, con 1 esquinero(s), 4 insertos M3
+   Zocalo_BandejaRDown_8              largo 115 mm, 2 tornillos M3
+   Zocalo_BandejaRDown_9              largo 121 mm, 2 tornillos M3
+   Zocalo_BandejaRDown_10             largo 43 mm, 1 tornillos M3
+
+Zocalo: angulo en L de 3 mm, ala de 20 mm bajo el piso y de 18 mm por fuera, a lo largo de todo el borde inferior
+  de la pared; dobla las esquinas y lleva el esquinero incorporado. Las piezas se unen a media madera: el
+  remache de la union atraviesa las dos. Reemplaza a las escuadras sueltas en esos tramos.
+Escuadras sueltas que siguen haciendo falta (donde no entra el zocalo): ninguna
+
+Remaches de 3 mm: 60 en los esquineros + 2 (piso y pared) por cada 'tornillo M3' de la lista;
+  las uniones a media madera aparecen en las dos piezas pero llevan un solo par de remaches. Comprar ~10% de repuesto.
+
+No se colocaron (chocaban con algo):
+   PETG_Esquinero_BandejaRDown_5 (esquinero, esquina de 58 grados, alto 40 mm, 4 insertos M3) choca con PETG_Zocalo_BandejaRDown_9 en x117 y102 z104
+   PETG_Zocalo_BandejaLTop_5 (zocalo, largo 60 mm, 0 tornillos M3) choca con PVC_BandejaLTop_Piso en x-118 y88 z146
+   PETG_Zocalo_BandejaRTop_1 (zocalo, largo 61 mm, 0 tornillos M3) choca con PVC_BandejaRTop_Piso en x115 y83 z147
+
+Avisos:
+   PETG_Zocalo_BandejaRDown_1: no se pudo dejar en un solo cuerpo cerrado ((1, 0))

@@ -1,0 +1,74 @@
+CARCASA DEL MECANISMO v4 (angulos de aluminio) - Ovum2_4_inox  (carcasa_mecanismo_ovum2_4.py)
+
+ENVOLVENTE inox 0.6, UNA pieza: desarrollo 480.0 x 208.4 mm, 20 dobleces a 90 (todos hacia el mismo lado)
+  agujeros: 14 x 5.0 (rivnut M3), 4 x 5.5 (M5), 16 x 3.4 (M3)
+  caja terminada: 186 x 95 x 183 mm (x, y, z)
+
+TAPA acrilico 4 mm: 186 x 95 mm, esquinas R3, 14 agujeros 3.4
+
+PETG: 8 nodos de esquina, 86.6 cm3 en total (~110 g macizo)
+  Nodo_Sup_Fondo_Izq.stl: 44 x 44 x 44 mm en cama, boca abajo (cara de la tapa en la cama), sin soportes
+  Nodo_Inf_Fondo_Izq.stl: 31 x 31 x 40 mm en cama, base plana abajo, sin soportes
+  Nodo_Sup_Frente_Izq.stl: 44 x 44 x 44 mm en cama, boca abajo (cara de la tapa en la cama), sin soportes
+  Nodo_Inf_Frente_Izq.stl: 31 x 31 x 40 mm en cama, base plana abajo, sin soportes
+  Nodo_Sup_Fondo_Der.stl: 44 x 44 x 44 mm en cama, boca abajo (cara de la tapa en la cama), sin soportes
+  Nodo_Inf_Fondo_Der.stl: 31 x 31 x 40 mm en cama, base plana abajo, sin soportes
+  Nodo_Sup_Frente_Der.stl: 44 x 44 x 44 mm en cama, boca abajo (cara de la tapa en la cama), sin soportes
+  Nodo_Inf_Frente_Der.stl: 31 x 31 x 40 mm en cama, base plana abajo, sin soportes
+
+ANGULOS DE ALUMINIO 25 x 25 x 1.0 mm (alas iguales), 8 tramos, total 923 mm:
+  (agujeros 3.4: distancia desde el extremo INFERIOR (verticales), del FONDO (laterales) o IZQUIERDO (fondo/frente)
+   / ala donde va / distancia desde el canto exterior del angulo)
+  Angulo_Vertical_Fondo_Izq: cortar a 139.2 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala lateral, a 12.0 mm del canto
+      a   68.9 mm del extremo, ala lateral, a 12.0 mm del canto
+      a  131.2 mm del extremo, ala lateral, a 12.0 mm del canto
+  Angulo_Vertical_Frente_Izq: cortar a 139.2 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala lateral, a 12.0 mm del canto
+      a   68.9 mm del extremo, ala lateral, a 12.0 mm del canto
+      a  131.2 mm del extremo, ala lateral, a 12.0 mm del canto
+  Angulo_Sup_Lateral_Izq: cortar a 46.0 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a   23.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a   38.0 mm del extremo, ala superior, a 7.0 mm del canto
+  Angulo_Vertical_Fondo_Der: cortar a 139.2 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala lateral, a 12.0 mm del canto
+      a   68.9 mm del extremo, ala lateral, a 12.0 mm del canto
+      a  131.2 mm del extremo, ala lateral, a 12.0 mm del canto
+  Angulo_Vertical_Frente_Der: cortar a 139.2 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala lateral, a 12.0 mm del canto
+      a   68.9 mm del extremo, ala lateral, a 12.0 mm del canto
+      a  131.2 mm del extremo, ala lateral, a 12.0 mm del canto
+  Angulo_Sup_Lateral_Der: cortar a 46.0 mm, 3 agujeros:
+      a    8.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a   23.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a   38.0 mm del extremo, ala superior, a 7.0 mm del canto
+  Angulo_Sup_Fondo: cortar a 137.0 mm, 2 agujeros:
+      a    8.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a  129.0 mm del extremo, ala superior, a 7.0 mm del canto
+  Angulo_Sup_Frente: cortar a 137.0 mm, 2 agujeros:
+      a    8.0 mm del extremo, ala superior, a 7.0 mm del canto
+      a  129.0 mm del extremo, ala superior, a 7.0 mm del canto
+  Los angulos entran 16 mm en los bolsillos de los nodos (0.3 mm de holgura); los extremos quedan a 24.5 mm
+  de cada esquina, asi las alas de angulos vecinos nunca se pisan. Matar rebabas de corte y de taladro.
+
+IMPRESION (STL de esta carpeta ya orientados, en mm, apoyados en z=0; los de 'montaje/' estan en posicion de ensamble):
+  PETG, boquilla 0.4, capa 0.2, 4 perimetros, relleno 30-40 % gyroid. Sin soportes: los voladizos son de 1.3 mm.
+  Izq y Der son piezas espejo: imprimir cada archivo una vez (no espejar en el laminador).
+  Bolsillos para angulo de 1.0 mm + 0.3 de holgura: probar primero 1 nodo con un recorte de angulo.
+
+TORNILLERIA:
+  14 x tuerca remachable (rivnut) M3 cabeza plana en las pestanas superiores
+  4 x M3x12 cabeza boton (placas de esquina superiores -> acrilico -> rivnut)
+  8 x M3x14 cabeza boton (uniones de arriba: nodo + angulo + acrilico -> rivnut)
+  2 x M3x10 cabeza boton (centro de los angulos superiores laterales -> acrilico -> rivnut)
+  8 x M3x10 cabeza boton + tuerca por dentro (uniones laterales: nodo + angulo + chapa)
+  4 x M3x8 cabeza boton + tuerca por dentro (centro de los angulos verticales)
+  4 x M3x8 cabeza boton + tuerca por dentro (placa de los nodos inferiores)
+  4 x M5x10 + tuerca T 2020 (pestanas inferiores de los laterales)
+
+ARMADO: cortar y agujerear plano -> remachar rivnuts -> doblar pestanas -> doblar las 4 esquinas
+        -> presentar sobre el bastidor por arriba (pasa por encima de la canaleta) -> M5
+        -> nodos inferiores + angulos verticales (entran en los bolsillos) -> tapa de acrilico
+        -> angulos superiores apoyados en las aristas -> nodos superiores encajados sobre los 3 angulos
+        -> presentar todo flojo y recien despues apretar los M3.

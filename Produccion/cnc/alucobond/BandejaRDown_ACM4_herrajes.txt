@@ -1,0 +1,39 @@
+BandejaRDown - ALUCOBOND 4 mm - HERRAJES Y ARMADO
+
+Piezas: Piso + Pared_1, Pared_2, Pared_3, Pared_4
+Pestanas del piso: 19 (muesca abierta + escuadra: 14, muesca abierta sin escuadra: 2,
+  ranura cerrada en pared propia: 0, ranura cerrada en pared de otra bandeja: 3)
+
+Escuadras de aluminio 2 mm por fuera: 14 (15 mm de ancho, ala bajo el piso 20, ala exterior 18)
+    85 grados: 3
+    86 grados: 2
+    87 grados: 1
+    90 grados: 1
+    94 grados: 4
+    97 grados: 2
+    111 grados: 1
+  Remaches ciegos D4 cabeza redonda 4x10: 28 (piso desde arriba, pared desde adentro)
+    Pared_2      s=   31.8 mm   97.1 grados
+    Pared_2      s=   95.4 mm   97.1 grados
+    Pared_2      s=  164.6 mm   85.5 grados
+    Pared_2      s=  232.4 mm   85.5 grados
+    Pared_2      s=  300.2 mm   85.5 grados
+    Pared_2      s=  442.6 mm   89.6 grados
+    Pared_2      s=  620.1 mm   86.5 grados
+    Pared_2      s=  702.5 mm   86.2 grados
+    Pared_2      s=  762.7 mm   86.2 grados
+    Pared_3      s=   44.4 mm   93.5 grados
+    Pared_3      s=  106.9 mm   93.5 grados
+    Pared_3      s=  176.2 mm   93.5 grados
+    Pared_3      s=  245.5 mm   93.5 grados
+    Pared_3      s=  304.6 mm  111.1 grados
+
+Cunas impresas en PETG (transicion pared compartida -> pared propia): 1
+    Cuna 1: triangulo 7.1 x 4 mm, angulo 29.4 grados, alto hasta el borde de la pared; pegar sobre el piso
+
+Comparte pared con BandejaLDown, BandejaRTop: el piso llega hasta la cara exterior de esa pared y sus pestanas
+  entran en ranuras cerradas de esa pared.
+
+Orden de armado: 1) plegar el piso (adhesivo en las ranuras V); 2) plegar las paredes; 3) montar las paredes con las
+  pestanas en sus muescas/ranuras; 4) sellador en las juntas entre paredes; 5) escuadras por fuera: presentar,
+  taladrar a traves de los agujeros y remachar.

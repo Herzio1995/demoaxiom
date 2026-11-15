@@ -1,0 +1,31 @@
+BandejaLTop - ALUCOBOND 5 mm - HERRAJES Y ARMADO
+
+Piezas: Piso + Pared_1, Pared_2, Pared_3
+Pestanas del piso: 8 (muesca abierta + escuadra: 4, muesca abierta sin escuadra: 1,
+  ranura cerrada en pared propia: 2, ranura cerrada en pared de otra bandeja: 1)
+
+Escuadras de aluminio 2 mm por fuera: 4 (15 mm de ancho, ala bajo el piso 20, ala exterior 18)
+    90 grados: 1
+    93 grados: 2
+    97 grados: 1
+  Remaches ciegos D4 cabeza redonda 4x10: 8 (piso desde arriba, pared desde adentro)
+    Pared_2      s=   49.6 mm   90.0 grados
+    Pared_2      s=  182.8 mm   92.8 grados
+    Pared_2      s=  269.8 mm   92.8 grados
+    Pared_2      s=  365.9 mm   96.9 grados
+
+Remaches pasantes con separador (pared en rendija con la bandeja central): 1
+    Pared_1 s=27.7 / central Embudo_Izq s=154.8, z=166.6: separador PETG D8x9.0 mm, remache D4 agarre 19.0 mm, cabeza en la lateral, cola en la central (luz al huevo 0.5 mm)
+
+Cunas impresas en PETG (transicion pared compartida -> pared propia): 1
+    Cuna 1: triangulo 23.0 x 5 mm, angulo 12.3 grados, alto hasta el borde de la pared; pegar sobre el piso
+
+Paredes compartidas con: BandejaLDown. Esas paredes bajan 3.5 mm bajo el piso mas bajo;
+  las pestanas de ambos pisos entran en ranuras cerradas (sin escuadra). Sellador en la union.
+
+Comparte pared con BandejaCentral: el piso llega hasta la cara exterior de esa pared y sus pestanas
+  entran en ranuras cerradas de esa pared.
+
+Orden de armado: 1) plegar el piso (adhesivo en las ranuras V); 2) plegar las paredes; 3) montar las paredes con las
+  pestanas en sus muescas/ranuras; 4) sellador en las juntas entre paredes; 5) escuadras por fuera: presentar,
+  taladrar a traves de los agujeros y remachar.
