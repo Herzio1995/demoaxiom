@@ -59,31 +59,51 @@ function cyl(r, h, material, x = 0, y = 0, z = 0, seg = 28) {
 /* Piezas                                                              */
 /* ------------------------------------------------------------------ */
 
-function makePlatform() {
-  const g = new THREE.Group();
-  const base = new THREE.Mesh(new RoundedBoxGeometry(15, 0.8, 11, 3, 0.18), [
-    mat(C.platformSide), mat(C.platformSide), mat(C.platformTop), mat(C.platformSide), mat(C.platformSide), mat(C.platformSide),
-  ]);
-  base.position.y = -0.4;
-  base.receiveShadow = true;
-  g.add(base);
+// Paletas del entorno según el tema de la página (fog = color de fondo CSS).
+const THEMES = {
+  light: { fog: 0xf3f5ef, ground: 0xe3e9df, pad: 0xd0dace, grid: 0xb9c7bb, sky: 0xffffff, hemi: 1.55, sun: 2.6, exposure: 1.0 },
+  dark: { fog: 0x071a22, ground: 0x0b222c, pad: 0x163440, grid: 0x24495a, sky: 0xd8ece4, hemi: 1.2, sun: 2.3, exposure: 1.05 },
+};
 
-  // Rejilla
+/** Terreno infinito que se funde con el fondo + losa del predio + rejilla. */
+function makeGround() {
+  const g = new THREE.Group();
+  const groundMat = new THREE.MeshStandardMaterial({ color: THEMES.light.ground, roughness: 1 });
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.04;
+  ground.receiveShadow = true;
+  g.add(ground);
+
+  const padMat = new THREE.MeshStandardMaterial({ color: THEMES.light.pad, roughness: 0.9 });
+  const pad = new THREE.Mesh(new THREE.BoxGeometry(16, 0.04, 9.4), padMat);
+  pad.position.set(0, -0.02, -0.75);
+  pad.receiveShadow = true;
+  g.add(pad);
+
   const pts = [];
-  for (let x = -7; x <= 7; x += 1) pts.push(x, 0.005, -5.5, x, 0.005, 3.3);
-  for (let z = -5; z <= 3; z += 1) pts.push(-7.5, 0.005, z, 7.5, 0.005, z);
+  for (let x = -60; x <= 60; x += 2) pts.push(x, -0.035, -60, x, -0.035, 60);
+  for (let z = -60; z <= 60; z += 2) pts.push(-60, -0.035, z, 60, -0.035, z);
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-  g.add(new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: C.grid, transparent: true, opacity: 0.45 })));
-  return g;
+  const gridMat = new THREE.LineBasicMaterial({ color: THEMES.light.grid, transparent: true, opacity: 0.55 });
+  g.add(new THREE.LineSegments(geo, gridMat));
+  return { group: g, groundMat, padMat, gridMat };
 }
 
 function makeRoad() {
   const g = new THREE.Group();
-  g.add(box(15, 0.06, 1.9, mat(C.road), 0, 0, 4.45, 0));
-  g.add(box(15, 0.1, 0.12, mat(C.lime), 0, 0, 3.45, 0));
-  for (let x = -7; x < 7.5; x += 1.25) g.add(box(0.6, 0.075, 0.08, mat(C.roadLine), x, 0, 4.45, 0));
+  const L = 140;
+  g.add(box(L, 0.05, 1.9, mat(C.road), 0, -0.03, 4.45, 0));
+  g.add(box(16, 0.1, 0.12, mat(C.lime), 0, 0, 3.45, 0));
+  for (let x = -L / 2; x < L / 2; x += 1.25) g.add(box(0.6, 0.03, 0.08, mat(C.roadLine), x, 0.02, 4.45, 0));
   return g;
+}
+
+// Pseudoaleatorio con semilla: la escena se ve igual en cada carga.
+function seeded(seed) {
+  let s = seed;
+  return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
 }
 
 function makeStation() {
@@ -328,37 +348,50 @@ function makePipe(points, radius = 0.08) {
 /* Escena                                                              */
 /* ------------------------------------------------------------------ */
 
-export function createHeroScene(container, { labelsEl, reducedMotion = false } = {}) {
+export function createHeroScene(container, { labelsEl, reducedMotion = false, theme = 'light' } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
-  camera.position.set(20, 16.5, 20);
-  camera.lookAt(0, -0.3, 0);
+  scene.fog = new THREE.Fog(THEMES.light.fog, 34, 72);
 
-  scene.add(new THREE.HemisphereLight(0xe3f1ea, 0x0a1a20, 1.25));
+  // Cámara en perspectiva que orbita el predio (no una vista isométrica fija).
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.5, 300);
+  const target = new THREE.Vector3(0, 0.6, -0.4);
+  const orbit = { angle: 0.74, radius: 27, height: 12.5 }; // pose final (la intro parte de otra)
+  const scroll = { angle: 0, radius: 0, height: 0 };
+  const pointer = { x: 0, y: 0, sx: 0, sy: 0 };
+  let distanceScale = 1;
+  let drift = 0;
+
+  function placeCamera() {
+    const a = orbit.angle + scroll.angle + drift + pointer.sx * 0.1;
+    const r = (orbit.radius + scroll.radius) * distanceScale;
+    const h = (orbit.height + scroll.height) * distanceScale - pointer.sy * 1.2;
+    camera.position.set(target.x + Math.sin(a) * r, h, target.z + Math.cos(a) * r);
+    camera.lookAt(target);
+  }
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x0a1a20, 1.4);
+  scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xfff1dc, 2.4);
   sun.position.set(9, 16, 6);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 });
+  Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 50 });
   sun.shadow.bias = -0.0005;
   sun.shadow.radius = 4;
   scene.add(sun);
 
-  const stage = new THREE.Group(); // recibe scroll
-  const world = new THREE.Group(); // recibe parallax
-  stage.add(world);
-  scene.add(stage);
+  const world = new THREE.Group();
+  scene.add(world);
 
-  const platform = makePlatform();
+  const ground = makeGround();
   const road = makeRoad();
   const station = makeStation();
   const farm = makeTankFarm();
@@ -367,11 +400,25 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
   const hub = makeHub();
   const barrels = makeBarrels();
 
+  // árboles del predio
   const trees = new THREE.Group();
   for (const [x, z, s] of [[-0.9, -4.6, 1], [0.3, -4.1, 0.8], [-1.5, -3.4, 0.7], [7.0, -4.9, 0.9], [-6.9, 2.7, 0.8], [-6.7, -1.6, 1.1], [1.4, -1.6, 0.6], [6.9, -0.6, 0.7]]) {
     const t = makeTree(s);
     t.position.set(x, 0, z);
     trees.add(t);
+  }
+  // bosque alrededor que se pierde en la niebla
+  const forest = new THREE.Group();
+  const rnd = seeded(7);
+  for (let i = 0; i < 110; i++) {
+    const x = (rnd() - 0.5) * 70;
+    const z = (rnd() - 0.5) * 60;
+    if (Math.abs(x) < 9 && z > -6.5 && z < 6.5) continue; // predio
+    if (z > 2.8 && z < 6.4) continue; // carretera
+    const t = makeTree(0.7 + rnd() * 0.9);
+    t.position.set(x, 0, z);
+    t.rotation.y = rnd() * Math.PI;
+    forest.add(t);
   }
 
   const pipes = [
@@ -383,23 +430,35 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
   pipes.forEach((p) => { pipeGroup.add(p.mesh); p.packets.forEach((k) => pipeGroup.add(k)); });
 
   const truckA = makeTruck();
-  truckA.group.position.set(-3, 0.03, 4.0);
+  truckA.group.position.set(-6, 0.03, 4.0);
   const truckB = makeTruck({ tankColor: C.gold, cabColor: C.lime, stripe: C.navy });
-  truckB.group.position.set(4, 0.03, 4.95);
+  truckB.group.position.set(12, 0.03, 4.95);
   truckB.group.rotation.y = Math.PI;
-  truckB.group.scale.setScalar(0.85);
+  const truckC = makeTruck({ tankColor: C.white, cabColor: C.navy, stripe: C.gold });
+  truckC.group.position.set(-28, 0.03, 4.0);
 
-  world.add(platform, road, station.group, farm.group, tower.group, solar.group, hub.group, barrels, trees, pipeGroup, truckA.group, truckB.group);
+  world.add(ground.group, road, forest, station.group, farm.group, tower.group, solar.group, hub.group, barrels, trees, pipeGroup, truckA.group, truckB.group, truckC.group);
+  world.visible = reducedMotion; // se muestra al arrancar la intro
 
-  // centra la composición
-  world.position.set(0, 0, -0.2);
-  stage.visible = reducedMotion; // se muestra al arrancar la intro
+  /* -------- tema -------- */
+  function setTheme(name) {
+    const t = THEMES[name] || THEMES.light;
+    scene.fog.color.setHex(t.fog);
+    ground.groundMat.color.setHex(t.ground);
+    ground.padMat.color.setHex(t.pad);
+    ground.gridMat.color.setHex(t.grid);
+    hemi.color.setHex(t.sky);
+    hemi.intensity = t.hemi;
+    sun.intensity = t.sun;
+    renderer.toneMappingExposure = t.exposure;
+  }
+  setTheme(theme);
 
   /* -------- etiquetas HTML proyectadas -------- */
   const labelDefs = [
     { text: 'Estaciones de servicio', anchor: station.anchor },
     { text: 'Almacenamiento', anchor: farm.anchor },
-    { text: 'Distribución a granel', anchor: null, follow: truckA.group, offset: new THREE.Vector3(0, 1.9, 0) },
+    { text: 'Distribución a granel', follow: truckA.group, offset: new THREE.Vector3(0, 1.9, 0) },
     { text: 'Energía limpia', anchor: solar.anchor },
     { text: 'Control 24/7', anchor: hub.anchor },
   ];
@@ -418,19 +477,23 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
     height = container.clientHeight || 1;
     renderer.setSize(width, height);
     const aspect = width / height;
-    const f = 15.5 * Math.max(1, 1.25 / aspect);
-    camera.left = (-f * aspect) / 2;
-    camera.right = (f * aspect) / 2;
-    camera.top = f / 2;
-    camera.bottom = -f / 2;
+    camera.aspect = aspect;
+    // escritorio: el predio se corre a la derecha para dejar sitio al texto.
+    // móvil: se sube para dejar el texto abajo.
+    if (aspect > 1.15) {
+      distanceScale = Math.max(1, 1.75 / aspect);
+      camera.setViewOffset(width, height, -width * 0.2, height * 0.02, width, height);
+    } else {
+      distanceScale = Math.max(1, 1.25 / aspect) * 0.92;
+      camera.setViewOffset(width, height, 0, height * 0.06, width, height);
+    }
     camera.updateProjectionMatrix();
   }
   resize();
   const ro = new ResizeObserver(resize);
   ro.observe(container);
 
-  /* -------- parallax -------- */
-  const pointer = { x: 0, y: 0 };
+  /* -------- puntero -------- */
   const onPointer = (e) => {
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
     pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
@@ -443,18 +506,16 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
   let visible = true;
   let labelsOn = false;
   let elapsed = 0;
-  const trucksIn = { v: 0 }; // los camiones aparecen al terminar la intro
+  const trucksIn = { v: reducedMotion ? 1 : 0 };
 
   function moveTruck(t, dt, speed, dir, laneZ) {
     const g = t.group;
     g.position.x += speed * dt * dir;
-    if (dir > 0 && g.position.x > 9) g.position.x = -9;
-    if (dir < 0 && g.position.x < -9) g.position.x = 9;
-    const edge = THREE.MathUtils.clamp((7.6 - Math.abs(g.position.x)) / 1.2, 0, 1);
-    const base = (t === truckB ? 0.85 : 1) * trucksIn.v;
-    g.scale.setScalar(base * THREE.MathUtils.smoothstep(edge, 0, 1) + 0.0001);
+    if (dir > 0 && g.position.x > 34) g.position.x = -34;
+    if (dir < 0 && g.position.x < -34) g.position.x = 34;
+    g.scale.setScalar(trucksIn.v + 0.0001);
     g.position.z = laneZ;
-    t.body.position.y = Math.sin(elapsed * 18 + laneZ) * 0.012;
+    t.body.position.y = Math.sin(elapsed * 18 + g.position.x) * 0.012;
     t.wheels.forEach((w) => (w.rotation.z -= (speed * dt) / 0.21));
   }
 
@@ -465,11 +526,14 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
     const dt = Math.min(clock.getDelta(), 0.05) * (reducedMotion ? 0.35 : 1);
     elapsed += dt;
 
-    world.rotation.y += ((pointer.x * 0.12) - world.rotation.y) * 0.04;
-    world.rotation.x += ((pointer.y * 0.035) - world.rotation.x) * 0.04;
+    pointer.sx += (pointer.x - pointer.sx) * 0.035;
+    pointer.sy += (pointer.y - pointer.sy) * 0.035;
+    drift = reducedMotion ? 0 : Math.sin(elapsed * 0.12) * 0.07; // la cámara nunca está del todo quieta
+    placeCamera();
 
-    moveTruck(truckA, dt, 1.6, 1, 4.0);
-    moveTruck(truckB, dt, 2.1, -1, 4.95);
+    moveTruck(truckA, dt, 3.2, 1, 4.0);
+    moveTruck(truckC, dt, 3.2, 1, 4.0);
+    moveTruck(truckB, dt, 3.8, -1, 4.95);
 
     hub.drop.rotation.y += dt * 0.8;
     hub.drop.position.y = 1.1 + Math.sin(elapsed * 1.6) * 0.12;
@@ -497,7 +561,7 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
         l.v.project(camera);
         const x = (l.v.x * 0.5 + 0.5) * width;
         const y = (-l.v.y * 0.5 + 0.5) * height;
-        const hidden = Boolean(l.follow) && Math.abs(l.follow.position.x) > 6;
+        const hidden = Boolean(l.follow) && Math.abs(l.follow.position.x) > 9;
         l.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
         l.el.classList.toggle('is-hidden', hidden);
       }
@@ -506,42 +570,41 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
 
   const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0 });
   io.observe(container);
+  placeCamera();
   tick();
 
-  /* -------- intro con GSAP -------- */
+  /* -------- intro: vuelo de cámara + piezas que caen -------- */
   function intro() {
-    const pieces = [road, station.group, hub.group, farm.group, pipeGroup, tower.group, solar.group, barrels, trees, truckA.group, truckB.group];
+    world.visible = true;
+    const pieces = [station.group, hub.group, farm.group, pipeGroup, tower.group, solar.group, barrels, trees];
     if (reducedMotion) {
-      trucksIn.v = 1;
       labelsOn = true;
       labels.forEach((l) => l.el.classList.add('is-visible'));
       return gsap.timeline();
     }
-    stage.visible = true;
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.from(platform.position, { y: -3, duration: 1.2 }, 0)
-      .from(platform.scale, { x: 0.6, y: 0.6, z: 0.6, duration: 1.2, ease: 'back.out(1.4)' }, 0)
-      .from(stage.rotation, { y: -0.9, duration: 1.8, ease: 'power2.out' }, 0);
+    // la cámara baja desde una vista aérea girando alrededor del predio
+    tl.from(orbit, { angle: -0.9, radius: 16, height: 42, duration: 2.8, ease: 'power3.inOut' }, 0)
+      .from(forest.scale, { y: 0.01, duration: 1.4, ease: 'power2.out' }, 0.2)
+      .from(road.scale, { x: 0.02, duration: 1.4, ease: 'power3.inOut' }, 0.1);
     pieces.forEach((p, i) => {
-      if (p === truckA.group || p === truckB.group) return; // los camiones aparecen por su borde
       const y0 = p.position.y;
-      tl.fromTo(p.position, { y: y0 + 5 }, { y: y0, duration: 0.9, ease: 'bounce.out' }, 0.45 + i * 0.09);
-      tl.from(p.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.7, ease: 'back.out(1.7)' }, 0.45 + i * 0.09);
+      tl.fromTo(p.position, { y: y0 + 6 }, { y: y0, duration: 1, ease: 'bounce.out' }, 0.7 + i * 0.1);
+      tl.from(p.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.7, ease: 'back.out(1.7)' }, 0.7 + i * 0.1);
     });
-    tl.to(trucksIn, { v: 1, duration: 0.8, ease: 'back.out(2)' }, '-=0.5');
+    tl.to(trucksIn, { v: 1, duration: 0.8, ease: 'back.out(2)' }, 1.6);
     tl.add(() => {
       labelsOn = true;
-      labels.forEach((l, i) => setTimeout(() => l.el.classList.add('is-visible'), i * 120));
-    }, '-=0.3');
+      labels.forEach((l, i) => setTimeout(() => l.el.classList.add('is-visible'), i * 140));
+    }, 2.4);
     return tl;
   }
 
-  /* -------- scroll -------- */
+  /* -------- scroll: la cámara se acerca y rodea el predio -------- */
   function setScrollProgress(p) {
-    stage.rotation.y = p * 0.7;
-    stage.position.y = -p * 2.2;
-    const s = 1 - p * 0.18;
-    stage.scale.setScalar(s);
+    scroll.angle = p * 0.9;
+    scroll.radius = -p * 7;
+    scroll.height = -p * 4;
     if (labelsEl) labelsEl.style.opacity = String(1 - Math.min(1, p * 2.2));
   }
 
@@ -553,5 +616,5 @@ export function createHeroScene(container, { labelsEl, reducedMotion = false } =
     renderer.dispose();
   }
 
-  return { intro, setScrollProgress, dispose };
+  return { intro, setScrollProgress, setTheme, dispose };
 }

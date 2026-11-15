@@ -45,8 +45,9 @@ $$('a[href^="#"]').forEach((a) =>
 /* ---------------- Tema ---------------- */
 $('#themeToggle').addEventListener('click', () => {
   const root = document.documentElement;
-  const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   root.dataset.theme = next;
+  hero?.setTheme(next);
   try { localStorage.setItem('axiom-theme', next); } catch (e) { /* sin storage */ }
 });
 
@@ -94,7 +95,11 @@ setInterval(tickClock, 1000);
 /* ---------------- Hero 3D ---------------- */
 let hero = null;
 try {
-  hero = createHeroScene($('#heroCanvas'), { labelsEl: $('#heroLabels'), reducedMotion });
+  hero = createHeroScene($('#heroCanvas'), {
+    labelsEl: $('#heroLabels'),
+    reducedMotion,
+    theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
+  });
 } catch (err) {
   console.warn('WebGL no disponible, se muestra el hero sin 3D.', err);
   document.documentElement.classList.add('no-webgl');
@@ -113,8 +118,55 @@ function intro() {
   }
   tl.from('.nav', { y: -30, opacity: 0, duration: 0.6 }, '-=0.3')
     .from('.hero__title .word', { yPercent: 110, rotate: 4, duration: 0.9, stagger: 0.07, ease: 'power4.out' }, '-=0.4')
-    .from('[data-hero]', { y: 24, opacity: 0, duration: 0.7, stagger: 0.1 }, '-=0.6')
-    .add(() => hero?.intro(), '-=1.1');
+    .from('[data-hero]', { y: 24, opacity: 0, duration: 0.7, stagger: 0.08 }, '-=0.6')
+    .add(() => hero?.intro(), '-=1.6')
+    .add(startRotator)
+    .add(startHud, '-=0.4');
+}
+
+/* ---------------- Palabra rotativa del título ---------------- */
+function startRotator() {
+  const items = $$('#rotator .rotator__item');
+  const rot = $('#rotator');
+  if (!items.length) return;
+  let i = 0;
+  gsap.set(items, { yPercent: 110, opacity: 0 });
+  gsap.set(items[0], { yPercent: 0, opacity: 1 });
+  rot.style.setProperty('--w', `${items[0].offsetWidth}px`);
+  if (reducedMotion) return;
+  const next = () => {
+    const cur = items[i];
+    i = (i + 1) % items.length;
+    const nxt = items[i];
+    gsap.timeline()
+      .to(rot, { '--bar': 0, duration: 0.35, ease: 'power2.in' })
+      .set(rot, { '--w': `${nxt.offsetWidth}px` })
+      .to(cur, { yPercent: -110, opacity: 0, duration: 0.55, ease: 'power3.in' }, 0)
+      .fromTo(nxt, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, 0.45)
+      .to(rot, { '--bar': 1, duration: 0.6, ease: 'power3.out' }, 0.7);
+  };
+  setInterval(next, 2600);
+}
+
+/* ---------------- Panel de tanques (ilustrativo) ---------------- */
+function startHud() {
+  $$('.hud__row').forEach((row, idx) => {
+    const bar = $('i', row);
+    const out = $('b', row);
+    const state = { v: 0 };
+    let level = Number(row.dataset.level);
+    const render = () => {
+      bar.style.transform = `scaleX(${state.v})`;
+      out.textContent = `${Math.round(state.v * 100)}%`;
+    };
+    gsap.to(state, { v: level, duration: 1.6, delay: idx * 0.15, ease: 'power3.out', onUpdate: render });
+    if (reducedMotion) return;
+    // simula consumo y recarga
+    setInterval(() => {
+      level = level < 0.3 ? 0.92 : Math.max(0.2, level - 0.02 - Math.random() * 0.05);
+      gsap.to(state, { v: level, duration: level > 0.9 ? 1.4 : 0.9, ease: 'power2.inOut', onUpdate: render });
+    }, 2400 + idx * 700);
+  });
 }
 // arranca cuando las fuentes están listas (máximo 1.5 s de espera)
 Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((r) => setTimeout(r, 1500))]).then(intro);
@@ -129,12 +181,22 @@ if (hero) {
     onUpdate: (self) => hero.setScrollProgress(self.progress),
   });
 }
-gsap.to('.hero__copy', {
+gsap.to(['.hero__copy', '.hud', '.hero__facts'], {
   yPercent: -18,
-  opacity: 0.2,
+  opacity: 0.15,
   ease: 'none',
   scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
 });
+
+/* ---------------- Medidor de combustible (progreso de scroll) ---------------- */
+const fuel = $('#fuelLevel');
+if (fuel) {
+  ScrollTrigger.create({
+    start: 0,
+    end: 'max',
+    onUpdate: (self) => (fuel.style.transform = `scaleY(${(1 - self.progress * 0.88).toFixed(3)})`),
+  });
+}
 
 /* ---------------- Reveals ---------------- */
 if (!reducedMotion) {
